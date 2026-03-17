@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +27,7 @@ namespace OgrenciKayıt
             {
                 Console.WriteLine("DOSYA BULUNAMADI...");
                 Thread.Sleep(1000);
-                File.Create(full).Close();
+                File.WriteAllText(full, "admin | 1234" + Environment.NewLine);
                 Console.WriteLine("OLUŞTURULDU");
             }
 
@@ -43,105 +43,109 @@ namespace OgrenciKayıt
                 Console.WriteLine("LİSTE BULUNDU");
             }
 
-                while (true)
+            while (true)
+            {
+                Console.WriteLine("--------\n1.Kayıt\n2.Giriş\n3.Çıkış\n--------");
+                string secim = Console.ReadLine();
+
+                if (secim == "1")
                 {
-                    Console.WriteLine("--------\n1.Kayıt\n2.Giriş\n3.Çıkış\n--------");
-                    int kayıt = Int32.Parse(Console.ReadLine());
+                    Console.Write("Kullanıcı Adı: ");
+                    string ad = Console.ReadLine();
+                    Console.Write("Şifre: ");
+                    string şifre = Console.ReadLine();
 
-                    if (kayıt == 1)
+                    string kfull = ad + " | " + şifre;
+                    string[] kontrol = File.ReadAllLines(full);
+
+                    if (kontrol.Length > 0 && kontrol[0] == kfull)
                     {
-                        Console.Write("Kullanıcı Adı: ");
-                        string ad = Console.ReadLine();
-                        Console.Write("Şifre: ");
-                        string şifre = Console.ReadLine();
-
-                        string kfull = ad + " | " + şifre;
-                        string[] kontrol = File.ReadAllLines(full);
-                        if (kontrol[0] == kfull)
+                        Console.WriteLine("Admin Girişi Yapıldı");
+                        while (true)
                         {
-                            Console.WriteLine("Admin Girişi Yapıldı");
+                            Console.WriteLine("--------\n1.Öğrenci Ekle\n2.Liste Oluştur\n3.Çıkış\n--------");
+                            int cevap = Int32.Parse(Console.ReadLine());
+                            if (cevap == 1)
+                            {
+                                Console.Write("Kullanıcı Adı: ");
+                                string kullanıcı = Console.ReadLine();
+
+                                Console.Write("Şifre: ");
+                                string şif = Console.ReadLine();
+
+                                string ekle = kullanıcı + " | " + şif;
+                                File.AppendAllText(full, ekle + Environment.NewLine);
+                            }
+                            else if (cevap == 2)
+                            {
+                                Console.Write("--------\nÖğrenci Giriniz: ");
+                                string öğrenci = Console.ReadLine();
+                                string listele = " | " + öğrenci;
+                                File.AppendAllText(full2, listele + Environment.NewLine);
+                            }
+                            else if (cevap == 3)
+                            {
+                                break;
+                            }
+                            else
+                                Console.WriteLine("TANIMLANAMADI");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("İŞLEM BAŞARISIZ");
+                    }
+                }
+                else if (secim == "2")
+                {
+                    Console.Write("Kullanıcı Adı: ");
+                    string ad = Console.ReadLine();
+                    Console.Write("Şifre: ");
+                    string şifre = Console.ReadLine();
+
+                    string gfull = ad + " | " + şifre;
+                    string[] giriş = File.ReadAllLines(full);
+                    bool bulundu = false;
+
+                    for (int i = 1; i < giriş.Length; i++)
+                    {
+                        if (giriş[i] == gfull)
+                        {
+                            bulundu = true;
+                            Console.WriteLine("GİRİŞ BAŞARILI");
+
                             while (true)
                             {
-                                Console.WriteLine("--------\n1.Öğrenci Ekle\n2.Liste Oluştur\n3.Çıkış\n--------");
+                                Console.WriteLine("--------\n1.Liste\n2.Çıkış");
                                 int cevap = Int32.Parse(Console.ReadLine());
                                 if (cevap == 1)
                                 {
-                                    Console.Write("Kullanıcı Adı: ");
-                                    string kullanıcı = Console.ReadLine();
-
-                                    Console.WriteLine("Şifre: ");
-                                    string şif = Console.ReadLine();
-
-                                    string ekle = kullanıcı + " | " + şif;
-                                    File.AppendAllText(full, ekle + Environment.NewLine);
+                                    string list = File.ReadAllText(full2);
+                                    Console.WriteLine("--------\n" + list);
                                 }
                                 else if (cevap == 2)
-                                {
-                                    Console.Write("--------\nÖğrenci Giriniz: ");
-                                    string öğrenci = Console.ReadLine();
-                                    string listele = " | " + öğrenci;
-                                    File.AppendAllText(full2, listele + Environment.NewLine);
-                                }
-                                else if (cevap == 3)
-                                {
                                     break;
-                                }
                                 else
                                     Console.WriteLine("TANIMLANAMADI");
                             }
+                            break;
                         }
-                        else
-                        {
-                            Console.WriteLine("İŞLEM BAŞARISIZ");
-                        }
-
                     }
-                    else if (kayıt == 2)
+
+                    if (!bulundu)
                     {
-                        Console.Write("Kullanıcı Adı: ");
-                        string ad = Console.ReadLine();
-                        Console.Write("Şifre: ");
-                        string şifre = Console.ReadLine();
-
-                        string gfull = ad + " | " + şifre;
-                        string[] giriş = File.ReadAllLines(full);
-                        for (int i = 1; i < giriş.Length; i++)
-                        {
-                            if (giriş[i] == gfull)
-                            {
-                                Console.WriteLine("GİRİŞ BAŞARILI");
-
-                                while (true)
-                                {
-                                    Console.WriteLine("--------\n1.Liste\n2.Çıkış");
-                                    int cevap = Int32.Parse(Console.ReadLine());
-                                    if (cevap == 1)
-                                    {
-                                        string list = File.ReadAllText(full2);
-                                        Console.WriteLine("--------\n" + list);
-                                    }
-                                    else if (cevap == 2)
-                                        break;
-                                    else
-                                        Console.WriteLine("TANIMLANAMADI");
-                                }
-
-                            }
-                            else if (i == giriş.Length - 1)
-                            {
-                                Console.WriteLine("GİRİŞ BAŞARISIZ");
-                            }
-                        }
+                        Console.WriteLine("GİRİŞ BAŞARISIZ");
                     }
-                    else if (kayıt == 3)
-                    {
-                        Console.WriteLine("Kapatılıyor...");
-                        Thread.Sleep(1000);
-                        break;
-                    }
-                    else
-                        Console.WriteLine("TANIMLANAMADI");
                 }
+                else if (secim == "3")
+                {
+                    Console.WriteLine("Kapatılıyor...");
+                    Thread.Sleep(1000);
+                    break;
+                }
+                else
+                    Console.WriteLine("TANIMLANAMADI");
+            }
         }
     }
 }
